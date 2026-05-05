@@ -1,0 +1,1832 @@
+{
+  "name": "Turn YouTube Videos into Summaries, Transcripts, and Visual Insights",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# MeldFlow Contacts Creation",
+        "height": 288,
+        "width": 784,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3360,
+        3296
+      ],
+      "typeVersion": 1,
+      "id": "4a643a4a-5655-4dcb-bcde-bd6e95bd0217",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4288,
+        3376
+      ],
+      "id": "0fa12c96-1b5e-499e-afe3-aab8ea76c35c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const getFieldValue = (field) => {\n  if (!field) return null;\n  return field.value ?? field.fieldValue ?? field.field_value ?? null;\n};\n\nconst output = [];\n\nfor (const item of $input.all()) {\n  const contact = { ...item.json.contact };\n\n  const profileField = contact.customFields?.find(\n    f => f.id === 'fOhQq0LYtGa6bNka9SNh'\n  );\n\n  const companyField = contact.customFields?.find(\n    f => f.id === 'hPfsTj2cuY7fbUtcUSsm'\n  );\n\n  const industryField = contact.customFields?.find(\n    f => f.id === '49WkuHQOFDR2LTnJPMC7'\n  );\n\n  contact.profileUrl = getFieldValue(profileField);\n  contact.companyLinkedinUrl = getFieldValue(companyField);\n  contact.industry = getFieldValue(industryField);\n\n  output.push({\n    json: {\n      ...item.json,\n      contact\n    }\n  });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3952,
+        3376
+      ],
+      "id": "afa66b55-9519-4a01-8c01-7ddce4c4b7d8",
+      "name": "Url formatting - Apollo"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a cold outreach email using the exact subject line and body provided below. Do not rewrite, summarize, or modify the wording. Only insert the recipient's first name where indicated.\n\nFirst Name: {{ $json.firstName }}\n\nSubject line:\nHonest question\n\nEmail body template:\n\n{{ $json.firstName }},\n\nHow many hours did you spend last week on work that isn’t tax or accounting?\n\nI ask CPA firm owners that a lot. The answer is usually some version of: client emails, document chasing, scheduling, and billing that slips.\n\nThat’s not a discipline problem. It’s a systems problem.\n\nI help small CPA firms cut that admin layer with an operating system: automated intake, document collection, follow-ups, email triage, and recurring billing — installed in ~3–4 weeks.\n\nOne Michigan CPA (40 years in practice) told me after: “I was exhausted… you gave me my life back.”\n\nIf you want to see where time is leaking in your specific firm, here’s the free 15-minute Practice Audit:\n\nLink’s there when you’re ready.\n\n— John\n",
+        "options": {
+          "systemMessage": "=# HTML FORMATTING\n\n**Required:**\n- Wrap each paragraph in `<p>` tags\n- Use `<strong>` for emphasis (min 3 times per email)\n- Use `<ul><li>` only for 3+ items\n\n**Forbidden:**\n- No markdown\n- No CSS/inline styles\n- No `<html>`, `<body>`, or `<head>` tags\n- No escaped HTML entities\n- Return clean HTML only\n\n**Example:**\n```html\n<p>First paragraph with <strong>emphasis</strong> on key term.</p>\n<p>Second paragraph continues the story.</p>\n```\n\nReplace {{$json.firstName}} with the provided first name.\nReturn the output as JSON in this exact format with no extra text:\n\n{\n  \"name\": \"{{ $json.firstName }}\",\n  \"subject\": \"Honest question\",\n  \"emailBody\": \"full email body here\"\n}\n---"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        3888,
+        4016
+      ],
+      "id": "1c13f30d-8791-4e45-89cd-7e9e43164ceb",
+      "name": "AI Agent1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "content": "# Launch Profile Scraper - Profile Description Section",
+        "height": 288,
+        "width": 1232,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4544,
+        3296
+      ],
+      "typeVersion": 1,
+      "id": "9ba3fa01-4246-4e2c-8b47-f415d1586a34",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "content": "# AI Agent-Ice Breaker Generation",
+        "height": 336,
+        "width": 582,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3648,
+        3904
+      ],
+      "typeVersion": 1,
+      "id": "e0b0a4dc-8223-45fd-adaf-ef69806f70bf",
+      "name": "Sticky Note22"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d4ea1ead-5f54-4ff1-8a69-a4e1d55a96d6",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5216,
+        3392
+      ],
+      "id": "d4c09b8c-9fe6-4136-bd8b-20d7202ed3d6",
+      "name": "Phantom Execution4"
+    },
+    {
+      "parameters": {
+        "amount": 25
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5424,
+        3408
+      ],
+      "id": "e204ea96-c544-4cb2-89cc-892172dfe20a",
+      "name": "Wait_4",
+      "webhookId": "90e6397c-18a5-4a7e-ad95-9abf46ebb842"
+    },
+    {
+      "parameters": {
+        "content": "# Fetch Profile Description",
+        "height": 288,
+        "width": 688,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3360,
+        3600
+      ],
+      "typeVersion": 1,
+      "id": "7ab604e9-c2c4-49e8-aae5-2d8fe82a7f63",
+      "name": "Sticky Note23"
+    },
+    {
+      "parameters": {
+        "content": "# Merge Content",
+        "height": 336,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3360,
+        3904
+      ],
+      "typeVersion": 1,
+      "id": "4076430a-ac5e-4933-a02a-065208825946",
+      "name": "Sticky Note24"
+    },
+    {
+      "parameters": {
+        "content": "# Upload To Sheet For Approval",
+        "height": 336,
+        "width": 662,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5120,
+        3904
+      ],
+      "typeVersion": 1,
+      "id": "8e6e5a8f-2082-4573-b9bc-8e9bf58ac0d0",
+      "name": "Sticky Note25"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d4ea1ead-5f54-4ff1-8a69-a4e1d55a96d6",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4752,
+        3712
+      ],
+      "id": "b0b1521f-fde5-4095-8da8-ad8bff1ce6e2",
+      "name": "Phantom Execution5"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.phantombuster.com/api/v2/containers/fetch?id={{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4512,
+        3712
+      ],
+      "id": "728e635d-a5e7-42f5-b146-88df88c9da6d",
+      "name": "Status_5",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "amount": 25
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4976,
+        3728
+      ],
+      "id": "f3fc01cb-2592-4186-a977-21569692b9df",
+      "name": "Wait_5",
+      "webhookId": "90e6397c-18a5-4a7e-ad95-9abf46ebb842"
+    },
+    {
+      "parameters": {
+        "content": "# Company Profile Scraper",
+        "height": 288,
+        "width": 1712,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4064,
+        3600
+      ],
+      "typeVersion": 1,
+      "id": "c56baddc-f1e9-414d-82ec-b801f85f1d40",
+      "name": "Sticky Note26"
+    },
+    {
+      "parameters": {
+        "content": "# Final Batching",
+        "height": 288,
+        "width": 368,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4160,
+        3296
+      ],
+      "typeVersion": 1,
+      "id": "307f09a0-4fe5-48f3-b054-debce1d49b05",
+      "name": "Sticky Note27"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d4781373-a232-4b6d-a97a-bda6fc01b784",
+              "name": "companyDescription",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "655d1444-e5a5-4f13-bbe2-07820a56f3ab",
+              "name": "tagLine",
+              "value": "={{ $json.tagLine }}",
+              "type": "string"
+            },
+            {
+              "id": "8cdfdc51-f9b1-4803-aef0-9ef39a0f9634",
+              "name": "website",
+              "value": "={{ $json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "b46a6ce1-f6fe-4173-b969-653c37b06e80",
+              "name": "location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "dfaf8c6e-e53d-4623-b5e5-807a51302a4a",
+              "name": "companyAddress",
+              "value": "={{ $json.companyAddress }}",
+              "type": "string"
+            },
+            {
+              "id": "586d6940-6b5d-448d-9b38-d23389381b28",
+              "name": "companySize",
+              "value": "={{ $json.companySize }}",
+              "type": "string"
+            },
+            {
+              "id": "82f31f71-5a1c-4542-b83b-e46941a5cd88",
+              "name": "specialties",
+              "value": "={{ $json.specialties }}",
+              "type": "string"
+            },
+            {
+              "id": "529d280e-13c1-45e1-b6eb-f1576da4e846",
+              "name": "companyUrl",
+              "value": "={{ $json.companyUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "af37cb0e-045a-4176-9f17-258f620ebb93",
+              "name": "industry",
+              "value": "={{ $json.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "948facfa-5b76-4256-9583-af8e8a06ffe0",
+              "name": "companyName",
+              "value": "={{ $json.companyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5632,
+        3696
+      ],
+      "id": "92938a09-0096-4da3-ae90-43b50367fcd1",
+      "name": "Fields Mapping"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3744,
+        3104
+      ],
+      "id": "8882f74b-0bd5-44be-bbf4-dc9e1a38c3fc",
+      "name": "Get Apollo Page",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvlwmGSTjMpGQOCR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1b56f333-bf1b-4d5c-88d0-40ced704715b",
+              "leftValue": "={{ $json.emailStatus }}",
+              "rightValue": "=verified",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "80db2d4a-181b-43eb-8b04-661502e7ec48",
+              "leftValue": "={{ $json.company }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d4da6a83-1a39-4ac2-a593-2b5605d557a3",
+              "leftValue": "={{ $json.profileUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e0c026fd-c0a5-462e-95c6-ac079b0501e0",
+              "leftValue": "={{ $json.companyLinkedinUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5184,
+        3088
+      ],
+      "id": "1f2778ba-fb3e-47bf-baca-9f6e7d2521ff",
+      "name": "If Apollo Email Verified"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "url"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        5520,
+        3104
+      ],
+      "id": "4d52f425-6428-4b47-9c75-3b50cd1fa141",
+      "name": "Update Page Number",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvlwmGSTjMpGQOCR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Apollo Leads Fetching",
+        "height": 256,
+        "width": 576,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3712,
+        3024
+      ],
+      "typeVersion": 1,
+      "id": "6f36e5bb-7093-4a22-8938-aee4d1c1bf93",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/v1/people/match",
+        "sendHeaders": true,
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"id\": \"{{ $json.apollo_id }}\" }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4624,
+        3120
+      ],
+      "id": "d2077a0b-833f-432f-8eff-f61201e54f01",
+      "name": "Apollo-Enrichment1"
+    },
+    {
+      "parameters": {
+        "content": "# Apollo Leads Enrichment",
+        "height": 256,
+        "width": 1056,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4304,
+        3024
+      ],
+      "typeVersion": 1,
+      "id": "63e575b2-5ab2-4e08-b6e4-54da13d08475",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "# Trigger",
+        "height": 256,
+        "width": 336,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3360,
+        3024
+      ],
+      "typeVersion": 1,
+      "id": "1caa5318-e671-476c-8268-da4c112de258",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        5568,
+        4000
+      ],
+      "id": "2cf9a1cb-6545-4150-b109-57646454c868",
+      "name": "Append IceBreaker Generated",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvlwmGSTjMpGQOCR",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Apollo Page Increment",
+        "height": 256,
+        "width": 400,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5376,
+        3024
+      ],
+      "typeVersion": 1,
+      "id": "f4bb4b15-23ff-4ca3-b928-68466613b599",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7cc9e757-f1c7-4924-9d8f-8f6619a54bd7",
+              "leftValue": "={{ $json.new }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3648,
+        3392
+      ],
+      "id": "02c19aba-bd57-47a8-a6c2-42c50ed3689b",
+      "name": "If - Leads are new"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.phantombuster.com/api/v2/containers/fetch-output?id={{ $json.id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5616,
+        3376
+      ],
+      "id": "c9de713d-1769-485d-acb0-a8b3ba269dab",
+      "name": "Fetch Output URL",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output;\n\n// Extract the JSON URL using regex\nconst match = output.match(/JSON saved at (https:\\/\\/[^\\s]+result\\.json)/);\n\nif (!match) {\n  throw new Error('Could not find JSON URL in output');\n}\n\nreturn [{\n  json: {\n    resultUrl: match[1]\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3408,
+        3712
+      ],
+      "id": "4618475d-ed6d-48cb-bc64-cf7a68c264cf",
+      "name": "Parse Output URL"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.phantombuster.com/api/v2/agents/launch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"id\": \"\",\n  \"argument\": {\n    \"sessionCookie\": \"\",\n\n    \"spreadsheetUrl\": \"{{ $json.contact.profileUrl }}\",\n    \"columnName\": \"LinkedIn Profile\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4624,
+        3392
+      ],
+      "id": "49ed19db-ef29-4a13-a14c-374020c405de",
+      "name": "Phantom-Profile Scrapper",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.resultUrl }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3632,
+        3712
+      ],
+      "id": "9ec63b09-a6ca-437f-83cd-863d72956360",
+      "name": "Fetch Result"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.phantombuster.com/api/v2/containers/fetch?id={{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5024,
+        3392
+      ],
+      "id": "fa5aad92-4d45-470a-8b4b-01842796caba",
+      "name": "Status_Check",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.phantombuster.com/api/v2/agents/launch",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"id\": \"\",\n  \"argument\": {\n    \"sessionCookie\": \"\",\n    \"spreadsheetUrl\": \"{{ $json.contact.companyLinkedinUrl }}\",\n    \"columnName\": \"LinkedIn Profile\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4112,
+        3712
+      ],
+      "id": "5b6fbc29-8ce6-445a-bd6f-20dcd48717a5",
+      "name": "Phantom-Company",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "=https://api.phantombuster.com/api/v2/containers/fetch-result-object?id={{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5216,
+        3696
+      ],
+      "id": "01db6aac-6c5f-400b-ad94-087482c8bed1",
+      "name": "Fetch Results-Company",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume input is an array of items\nconst output = [];\n\nitems.forEach(item => {\n    const parsed = JSON.parse(item.json.resultObject); // parse the string\n    parsed.forEach(company => {\n        output.push(company);\n    });\n});\n\nreturn output.map(company => ({ json: company }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5440,
+        3696
+      ],
+      "id": "e898b0a5-749a-40a5-b36a-902acd2f4f0e",
+      "name": "result parser-company"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f40c8c32-37b5-4384-a231-9b38dd1270fd",
+              "name": "firstName",
+              "value": "={{ $json.general.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "96289263-cda5-43b8-9fa3-9d2076690cc0",
+              "name": "lastName",
+              "value": "={{ $json.general.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "ba572ba8-1fb8-49b4-98d4-8c5cf08883a3",
+              "name": "fullName",
+              "value": "={{ $json.general.fullName }}",
+              "type": "string"
+            },
+            {
+              "id": "a6e32c30-9e6e-4dde-98a7-41dd7a090496",
+              "name": "profileUrl",
+              "value": "={{ $json.general.profileUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "9490b3ff-e415-4f29-94b8-204671dad8c7",
+              "name": "location",
+              "value": "={{ $json.general.location }}",
+              "type": "string"
+            },
+            {
+              "id": "a533f88c-d379-4be2-8035-1bee07704bcb",
+              "name": "headline",
+              "value": "={{ $json.general.headline }}",
+              "type": "string"
+            },
+            {
+              "id": "5113194f-25b4-464e-9dfc-58d09a3a2948",
+              "name": "about",
+              "value": "={{ $json.general.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3840,
+        3712
+      ],
+      "id": "30df4f94-4871-4989-9723-7c27a69d25eb",
+      "name": "Filter Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f2cf354-d017-46e2-91ed-51549da53228",
+              "name": "contact.id",
+              "value": "={{ $json.contact.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c903108a-c3b5-416e-97dc-af2f047fd01e",
+              "name": "contact.profileUrl",
+              "value": "={{ $json.contact.profileUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "2dcdceb5-9a17-43ed-9b3d-d4bd79e87f78",
+              "name": "contact.companyLinkedinUrl",
+              "value": "={{ $json.contact.companyLinkedinUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "b211c3a4-1487-491d-96b9-b33262d95016",
+              "name": "contact.industry",
+              "value": "={{ $json.contact.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "a6564397-08c6-4d55-ba15-ff43b891f9f6",
+              "name": "contact.companyName",
+              "value": "={{ $json.contact.companyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4320,
+        4048
+      ],
+      "id": "07a46f92-49a0-412a-9cd3-d7f706d01109",
+      "name": "Fetching Fields"
+    },
+    {
+      "parameters": {
+        "content": "# Data Collection",
+        "height": 336,
+        "width": 864
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        4240,
+        3904
+      ],
+      "typeVersion": 1,
+      "id": "f1f7a816-a3e9-4c3d-828c-e0d3e29707b2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let raw = item.json.output;\n  \n  // Remove markdown code blocks if present\n  raw = raw.replace(/```json|```/g, '').trim();\n  \n  // Fix missing commas between fields\n  raw = raw.replace(/\"\\s*\\n\\s*\"/g, '\",\\n  \"');\n  \n  try {\n    const parsed = JSON.parse(raw);\n    return { json: parsed };\n  } catch (e) {\n    // If failing, return raw output for debugging\n    return { \n      json: { \n        parseError: e.message,\n        rawOutput: raw \n      } \n    };\n  }\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4560,
+        4016
+      ],
+      "id": "70ff8bab-dc46-418d-b4fd-bf8073105084",
+      "name": "Result Parsing-Agent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3408,
+        4016
+      ],
+      "id": "81eb10eb-3c2e-46ea-aeca-edd235158478",
+      "name": "Merge Content"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        5264,
+        4000
+      ],
+      "id": "3418c9ea-a44a-4af6-814e-f99789549931",
+      "name": "Merge-Final"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4864,
+        4032
+      ],
+      "id": "094f2283-3443-4109-a4dc-e21fb51da9d9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4368,
+        3104
+      ],
+      "id": "7691d9ae-a2f6-4c7e-aa17-d891410b37d7",
+      "name": "Loop Over for batching limit"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst ids = [];\n\nfor (const item of items) {\n  const people = item.json.people || [];\n  \n  for (const person of people) {\n    ids.push({\n      apollo_id: person.id,\n      first_name: person.first_name,\n      title: person.title,\n      company_name: person.organization?.name || ''\n    });\n  }\n}\n\nconsole.log(`Found ${ids.length} people to enrich`);\nreturn ids;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4144,
+        3104
+      ],
+      "id": "1996c7b6-5d21-4553-a56c-a0487c8fcee8",
+      "name": "Extract ID-Apollo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e2fca9a-654a-4367-a817-cb901ed8fab7",
+              "name": "id",
+              "value": "={{ $json.person.id }}",
+              "type": "string"
+            },
+            {
+              "id": "e88373b5-2501-42ca-a3b0-7d133456a14e",
+              "name": "firstName",
+              "value": "={{ $json.person.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "a07431da-e5b3-44fc-86ff-ea50aad7b2d8",
+              "name": "lastName",
+              "value": "={{ $json.person.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "a5af38c6-46ed-4970-bde1-0decce085c66",
+              "name": "name",
+              "value": "={{ $json.person.name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c1e90ca-e5ca-42cd-bbb4-caaa86be2e93",
+              "name": "profileUrl",
+              "value": "={{ $json.person.linkedin_url }}",
+              "type": "string"
+            },
+            {
+              "id": "93a8943e-e056-4e58-a509-df756261b9c3",
+              "name": "job_title",
+              "value": "={{ $json.person.title }}",
+              "type": "string"
+            },
+            {
+              "id": "fc8fad53-ff06-4935-8257-2a22e48cda4d",
+              "name": "country",
+              "value": "={{ $json.person.country }}",
+              "type": "string"
+            },
+            {
+              "id": "ef1aaf86-3170-4390-ad27-2c47f702bb5e",
+              "name": "email",
+              "value": "={{ $json.person.email }}",
+              "type": "string"
+            },
+            {
+              "id": "4590c4eb-5ccd-4ebe-8352-d86fc3b52a14",
+              "name": "emailStatus",
+              "value": "={{ $json.person.email_status }}",
+              "type": "string"
+            },
+            {
+              "id": "3a2dfd28-bd7a-47e1-87d8-fae34a0afa55",
+              "name": "company",
+              "value": "={{ $json.person.organization.name }}",
+              "type": "string"
+            },
+            {
+              "id": "51de70df-225e-44fa-9914-993fa2bb0dad",
+              "name": "phone",
+              "value": "={{ $json.person.organization.primary_phone.number }}",
+              "type": "string"
+            },
+            {
+              "id": "317c48da-deeb-45ef-abc8-5a1ba13418e9",
+              "name": "companyWebsiteUrl",
+              "value": "={{ $json.person.organization.website_url }}",
+              "type": "string"
+            },
+            {
+              "id": "79b7eba8-b0b1-4bc0-90ef-7b5a72111c11",
+              "name": "companyLinkedinUrl",
+              "value": "={{ $json.person.organization.linkedin_url }}",
+              "type": "string"
+            },
+            {
+              "id": "3d354052-62f4-4df8-8296-4fbb0fcd050b",
+              "name": "source",
+              "value": "Apollo",
+              "type": "string"
+            },
+            {
+              "id": "42b6ddf6-0661-4b4e-9030-7bc0a83a15f9",
+              "name": "industry",
+              "value": "={{ $json.person.organization.industry }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5008,
+        3088
+      ],
+      "id": "27ba02a5-80dc-43f6-a8c6-896def6cb44b",
+      "name": "Data Filtering & Formatting"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/api/v1/mixed_people/api_search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Api-Key"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"page\": {{ $json.Apollo_Page }},\n  \"per_page\": 1,\n  \"contact_email_status\": [\"verified\"],\n\n  \"person_titles\": [\n    \"owner\",\n    \"founder\",\n    \"partner\",\n    \"president\",\n    \"principal\",\n    \"ceo\",\n    \"managing director\",\n    \"agency owner\",\n    \"certified public accountant\",\n    \"cpa\"\n  ],\n\n  \"person_locations\": [\"United States\"],\n  \"organization_locations\": [\"United States\"],\n\n  \"organization_num_employees_ranges\": [\"1,25\"],\n\n  \"revenue_range\": {\n    \"min\": 150000,\n    \"max\": 5000000\n  },\n\n \"q_organization_keyword_tags\": [\n  \"accounting\",\n  \"accounting firm\",\n  \"tax services\",\n  \"tax preparation\",\n  \"tax consulting\",\n  \"tax advisory\",\n  \"cpa firm\",\n  \"certified public accountant\",\n  \"bookkeeping\",\n  \"bookkeeping services\",\n  \"payroll services\",\n  \"financial services\",\n  \"audit services\",\n  \"auditing\",\n  \"business consulting\",\n  \"financial advisory\",\n  \"outsourced accounting\",\n  \"virtual accounting\",\n  \"small business accounting\",\n  \"sales tax\",\n  \"irs representation\",\n  \"forensic accounting\"\n]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3952,
+        3104
+      ],
+      "id": "39f8a181-2477-43bf-8a80-e240bed35006",
+      "name": "Apollo lead search",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "=0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        3488,
+        3104
+      ],
+      "id": "76a59910-f751-4f27-a620-ecec9cbaed96",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4816,
+        3120
+      ],
+      "id": "429fceed-6465-42fb-aeea-75f2567ca83b",
+      "name": "Wait",
+      "webhookId": "11431347-1fb0-48e7-9bee-e019aa50fb9a"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/upsert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Aaccept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $json.firstName }}\",\n  \"lastName\": \"{{ $json.lastName }}\",\n  \"email\": \"{{ $json.email || '' }}\",\n  \"phone\": \"{{ $json.phone || '' }}\",\n  \"locationId\": \"\",\n  \"companyName\": \"{{ $json.company || '' }}\",\n  \"address1\": \"{{ $json.location || '' }}\",\n  \"source\": \"{{ $json.source }}\",\n  \"tags\": [\n    \"n8n\",\n    \"Apollo Leads\"\n  ],\n  \"customFields\": [\n    {\n      \"key\": \"job_title\",\n      \"field_value\": \"{{ $json.job_title || '' }}\"\n    },\n    {\n      \"key\": \"email_status\",\n      \"field_value\": \"Verified\"\n    },\n    {\n      \"key\": \"linkedin_url\",\n      \"field_value\": \"{{ $json.profileUrl }}\"\n    },\n    {\n      \"key\": \"companylinkedinurl\",\n      \"field_value\": \"{{ $json.companyLinkedinUrl }}\"\n    },\n    {\n      \"key\": \"industry\",\n      \"field_value\": \"{{ $json.industry || '' }}\"\n    }\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3408,
+        3392
+      ],
+      "id": "2c2ebf83-267a-46e3-8d87-cad44ef9147f",
+      "name": "Meldflow-Contacts Update",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "91629c92-b750-4057-87a1-5d3a08747030",
+              "name": "id",
+              "value": "={{ $json.containerId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4816,
+        3392
+      ],
+      "id": "00e19cd2-a453-4692-8267-22bc7890a540",
+      "name": "Set Id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "91629c92-b750-4057-87a1-5d3a08747030",
+              "name": "id",
+              "value": "={{ $json.containerId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4320,
+        3712
+      ],
+      "id": "d890197b-4b12-4248-9333-e35e00a81582",
+      "name": "Set Id_"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3696,
+        4128
+      ],
+      "id": "57c1fa77-7e0b-4856-ba61-6e8601fc4a98",
+      "name": "OpenAI Chat Model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Phantom-Profile Scrapper",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Phantom-Company",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetching Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Url formatting - Apollo": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Result Parsing-Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phantom Execution4": {
+      "main": [
+        [
+          {
+            "node": "Fetch Output URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait_4": {
+      "main": [
+        [
+          {
+            "node": "Status_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phantom Execution5": {
+      "main": [
+        [
+          {
+            "node": "Fetch Results-Company",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status_5": {
+      "main": [
+        [
+          {
+            "node": "Phantom Execution5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait_5": {
+      "main": [
+        [
+          {
+            "node": "Status_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fields Mapping": {
+      "main": [
+        [
+          {
+            "node": "Merge Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Apollo Page": {
+      "main": [
+        [
+          {
+            "node": "Apollo lead search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Page Number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Apollo Email Verified": {
+      "main": [
+        [
+          {
+            "node": "Meldflow-Contacts Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apollo-Enrichment1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append IceBreaker Generated": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - Leads are new": {
+      "main": [
+        [
+          {
+            "node": "Url formatting - Apollo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Output URL": {
+      "main": [
+        [
+          {
+            "node": "Parse Output URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Output URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phantom-Profile Scrapper": {
+      "main": [
+        [
+          {
+            "node": "Set Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Result": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status_Check": {
+      "main": [
+        [
+          {
+            "node": "Phantom Execution4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phantom-Company": {
+      "main": [
+        [
+          {
+            "node": "Set Id_",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Results-Company": {
+      "main": [
+        [
+          {
+            "node": "result parser-company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "result parser-company": {
+      "main": [
+        [
+          {
+            "node": "Fields Mapping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetching Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Result Parsing-Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Content": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge-Final",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge-Final": {
+      "main": [
+        [
+          {
+            "node": "Append IceBreaker Generated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge-Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over for batching limit": {
+      "main": [
+        [
+          {
+            "node": "Data Filtering & Formatting",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Apollo-Enrichment1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ID-Apollo": {
+      "main": [
+        [
+          {
+            "node": "Loop Over for batching limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Filtering & Formatting": {
+      "main": [
+        [
+          {
+            "node": "If Apollo Email Verified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apollo lead search": {
+      "main": [
+        [
+          {
+            "node": "Extract ID-Apollo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Apollo Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over for batching limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meldflow-Contacts Update": {
+      "main": [
+        [
+          {
+            "node": "If - Leads are new",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Id": {
+      "main": [
+        [
+          {
+            "node": "Status_Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Id_": {
+      "main": [
+        [
+          {
+            "node": "Status_5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "74896af6-3594-4d1d-ac8f-79797797d539",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94f3374883dd0e385b571740e5f3cb3cfac13d8267b891f7eacd4addb031aa9b"
+  },
+  "id": "EGIaz7OSYQuUDmtKCrWDc",
+  "tags": []
+}
