@@ -22,7 +22,7 @@ This system automates the full outbound pipeline:
 
 Core pipeline responsible for:
 
-* Fetching leads from Apollo (CPA firms in the US)
+* Fetching leads from Apollo 
 * Enriching contact + company data
 * Scraping LinkedIn profiles & company pages
 * Structuring and merging data
@@ -31,7 +31,7 @@ Core pipeline responsible for:
 
 #### Key Features
 
-* 🔍 Targeted ICP filtering (CPA firms, revenue range, employee size)
+* 🔍 Targeted ICP filtering (specified firms, revenue range, employee size)
 * 🔗 LinkedIn profile + company scraping
 * 🤖 AI-generated outreach (HTML formatted emails)
 * 🔄 Batch processing with retry logic
@@ -80,8 +80,6 @@ Apollo → Enrichment → LinkedIn Scraping → AI Generation → Google Sheets 
 
 ## 🔐 Security
 
-* ❌ No API keys or credentials are included in this repository
-* 🔑 All credentials are managed via n8n credential manager
 * ⚠️ Before deploying, you must configure your own:
 
   * Apollo API Key
@@ -133,10 +131,10 @@ Apollo → Enrichment → LinkedIn Scraping → AI Generation → Google Sheets 
 
 ## 👨‍💻 Author
 
-Built by an automation-focused developer specializing in:
+Built by an AI automation-focused developer specializing in:
 
 * AI workflows
-* Lead generation systems
+* AI Agents
 * Business process automation
 
 ---
