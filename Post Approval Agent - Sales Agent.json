@@ -1,0 +1,256 @@
+{
+  "name": "Post Approval Agent - Sales Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "48013787-1fb1-47ef-aab2-48d9e1d94457",
+              "leftValue": "={{ $json.Approval }}",
+              "rightValue": "Approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "db8b2850-89cd-401b-812d-0477bb4be05a",
+              "leftValue": "={{ $json.Approval }}",
+              "rightValue": "approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8a658e7e-ac9b-4fa0-a0c6-d5617f65c95b",
+              "leftValue": "={{ $json.Approval }}",
+              "rightValue": "APPROVED",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        160
+      ],
+      "id": "a2e93b00-7e02-4baa-be4f-e025108456f6",
+      "name": "If Approved"
+    },
+    {
+      "parameters": {
+        "jsCode" : ""
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        416
+      ],
+      "id": "2e87c4d6-9d00-4ab8-a838-7f06ddd8c570",
+      "name": "Template Feeding"
+    },
+    {
+      "parameters": {
+        "content": "# Post Approval workflow",
+        "height": 944,
+        "width": 1008,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "392dc984-a5dc-49d7-a58e-d3aed5e5fca8",
+      "name": "Sticky Note13",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        160
+      ],
+      "id": "b4352fed-e116-4235-b08b-9b947d348b51",
+      "name": "Google Sheets Trigger2",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "CljSuLhCpiqEyywd",
+          "name": "Google Sheets Trigger account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/conversations/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Aaccept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": ""
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"type\": \"Email\",\n  \"contactId\": \"{{ $json.Id }}\",\n  \"locationId\": \"\",\n  \"subject\": \"{{$json.Subject}}\",\n  \"emailFrom\": \"your-email@yourdomain.com\",\n  \"html\": \"{{JSON.stringify($json.htmlContent)}}\",\n  \"attachments\": []\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        496,
+        656
+      ],
+      "id": "d62b96d0-9ae5-48f0-8c3a-d30dacb9783e",
+      "name": "Meldflow-Email",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        400
+      ],
+      "id": "55b974c2-c2b2-4857-a2b2-fee93635e365",
+      "name": "Loop Over Items"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If Approved": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Template Feeding": {
+      "main": [
+        [
+          {
+            "node": "Meldflow-Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger2": {
+      "main": [
+        [
+          {
+            "node": "If Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Template Feeding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meldflow-Email": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1489f67b-5489-4d5d-b226-f44f4d143ca5",
+  "meta": {
+    "instanceId": "45cbb671cb45747aaa8ac4823cc2941374c9229b6d9c20d74f1d1f569ca4133b"
+  },
+  "id": "gNn97MUkXr1Iwlie",
+  "tags": []
+}
