@@ -73,7 +73,7 @@ Handles sending emails after manual review.
 ## 🔄 System Architecture
 
 ```
-Apollo → Enrichment → LinkedIn Scraping → AI Generation → Google Sheets → Approval → Email भेजना
+Apollo → Enrichment → LinkedIn Scraping → AI Generation → Google Sheets → Approval → Email
 ```
 
 ---
