@@ -141,5 +141,5 @@ Built by an AI automation-focused developer specializing in:
 
 ## 📄 License
 
-MIT License (or update as needed)
+MIT License 
 
